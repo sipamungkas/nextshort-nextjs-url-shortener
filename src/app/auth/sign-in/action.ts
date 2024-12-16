@@ -32,23 +32,22 @@ export async function login(prevState: any, formData: FormData) {
     return { message: "Invalid Email or Password" };
   }
 
-  //   const supabase = await createClient();
+  const supabase = await createClient();
 
-  //   // type-casting here for convenience
-  //   // in practice, you should validate your inputs
-  //   const data = {
-  //     email: validatedFields.data.email,
-  //     password: validatedFields.data.password,
-  //   };
+  // type-casting here for convenience
+  // in practice, you should validate your inputs
+  const data = {
+    email: validatedFields.data.email,
+    password: validatedFields.data.password,
+  };
 
-  //   const { error } = await supabase.auth.signInWithPassword(data);
-  //   console.log({ error });
+  const { error } = await supabase.auth.signInWithPassword(data);
 
-  //   if (error) {
-  //     return { message: "Invalid Email or Password" };
-  //   }
+  if (error) {
+    return { message: "Invalid Email or Password" };
+  }
 
-  revalidatePath("/", "layout");
+  // revalidatePath("/", "layout");
   redirect("/account");
 }
 
