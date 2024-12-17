@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,36 +18,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Copy, Ellipsis } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const data = [
-  {
-    shortlink: "short.ly/abc123",
-    originalLink: "https://example.com/long-url-1",
-    qrCode: "QR_CODE_1",
-    clicks: 120,
-    status: "Active",
-    date: "2023-01-01",
-  },
-  {
-    shortlink: "short.ly/def456",
-    originalLink: "https://example.com/long-url-2",
-    qrCode: "QR_CODE_2",
-    clicks: 85,
-    status: "Inactive",
-    date: "2023-02-15",
-  },
-  {
-    shortlink: "short.ly/ghi789",
-    originalLink: "https://example.com/long-url-3",
-    qrCode: "QR_CODE_3",
-    clicks: 200,
-    status: "Active",
-    date: "2023-03-10",
-  },
-];
+import { getUrls } from "./action";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export function TableUrl() {
+  const [urls, setUrls] = useState([]);
+
+  const fetchData = async () => {
+    const res = await getUrls();
+    if (res.success) {
+      setUrls(res.data as unknown as []);
+    } else {
+      toast.error("Failed to fetch data");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard");
@@ -68,22 +60,29 @@ export function TableUrl() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((item) => (
-          <TableRow key={item.shortlink} className="text-card-foreground/80">
+        {urls.length === 0 && (
+          <TableRow className="">
+            <TableCell colSpan={7} className="text-center">
+              No Data
+            </TableCell>
+          </TableRow>
+        )}
+        {urls.map((item: any) => (
+          <TableRow key={item.id} className="text-card-foreground/80">
             <TableCell>
               <div className="flex flex-row items-center">
-                <p>{item.shortlink}</p>
+                <p>{`${BASE_URL}/${item.custom_url}`}</p>
                 <Copy
-                  onClick={() => handleCopy(item.shortlink)}
+                  onClick={() => handleCopy(`${BASE_URL}/${item.custom_url}`)}
                   className="h-3"
                 />
               </div>
             </TableCell>
-            <TableCell>{item.originalLink}</TableCell>
-            <TableCell>{item.qrCode}</TableCell>
-            <TableCell>{item.clicks}</TableCell>
-            <TableCell>{item.status}</TableCell>
-            <TableCell>{item.date}</TableCell>
+            <TableCell>{item.original_url}</TableCell>
+            <TableCell>{item.qr}</TableCell>
+            <TableCell>{item.clicks || 0}</TableCell>
+            <TableCell>{item.status || "active"}</TableCell>
+            <TableCell>{item.created_at}</TableCell>
             <TableCell className="text-center">
               <DropdownMenu>
                 <DropdownMenuTrigger>

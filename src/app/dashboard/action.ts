@@ -10,16 +10,13 @@ const createMaskSchema = z.object({
 
 export const createMask = async (prevState: any, form: FormData) => {
   try {
-    console.log({ form: form.getAll("name") });
     const validatedFields = createMaskSchema.safeParse({
       original_url: form.get("original_url"),
       maskUrl: form.get("mask_url"),
     });
 
-    console.log({ validatedFields });
     // Return early if the form data is invalid
     if (!validatedFields.success) {
-      console.log({ error: validatedFields.error });
       return {
         success: false,
         message: validatedFields.error.errors[0].message,
@@ -36,7 +33,7 @@ export const createMask = async (prevState: any, form: FormData) => {
       return { success: false, message: "Mask url already exists" };
     }
 
-    const { data, error } = await supabase.from("urls").insert([
+    const { error } = await supabase.from("urls").insert([
       {
         title: validatedFields.data?.title,
         original_url: validatedFields.data?.original_url,
@@ -44,24 +41,33 @@ export const createMask = async (prevState: any, form: FormData) => {
         custom_url: validatedFields.data?.maskUrl,
       },
     ]);
-    console.log({ data, error });
     if (error) {
-      console.log(error);
       return { success: false, message: "something went wrong" };
     }
     return { success: true, message: "Mask created successfully" };
   } catch (error) {
-    console.log(error, { catchError: "lksdfjlks" });
+    console.log(error);
     return { success: false, message: "something went wrong" };
   }
 };
 
 export const getUrls = async () => {
-  const supabase = createClient();
-  const { data, error } = await supabase.from("urls").select("*");
-  if (error) {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("urls")
+      .select("*")
+      .neq("custom_url", null)
+      .neq("original_url", null)
+      .neq("short_url", null)
+      .neq("original_url", "");
+    if (error) {
+      console.log(error);
+      return { success: false, message: "something went wrong" };
+    }
+    return { success: true, data };
+  } catch (error) {
     console.log(error);
     return { success: false, message: "something went wrong" };
   }
-  return { success: true, data };
 };

@@ -13,10 +13,6 @@ export default async function DashboardLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/auth/sign-in");
-  }
-
   return (
     <div className="mx-auto relative w-full">
       <Navbar user={user} />

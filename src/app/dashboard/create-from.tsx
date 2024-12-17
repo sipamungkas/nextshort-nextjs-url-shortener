@@ -51,6 +51,7 @@ export const CreateForm = () => {
           id="original_url"
           name="original_url"
           placeholder="Enter Original Url"
+          required
         />
         <Input
           className="rounded-md md:rounded-xl h-10"
@@ -58,6 +59,7 @@ export const CreateForm = () => {
           id="mask_url"
           name="mask_url"
           placeholder="Enter Mask Url"
+          required
         />
         <Button type="submit" className="w-full">
           Shorten

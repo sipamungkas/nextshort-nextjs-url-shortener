@@ -30,7 +30,12 @@ export async function updateSession(request: NextRequest) {
   );
 
   // refreshing the auth token
-  await supabase.auth.getUser();
+  const user = await supabase.auth.getUser();
+
+  //protected page
+  if (request.nextUrl.pathname.startsWith("/dashboard") && user.error) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
   return supabaseResponse;
 }
