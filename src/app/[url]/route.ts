@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/utils/supabase/server";
 import { type NextRequest, NextResponse } from "next/server";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export async function GET(
   req: NextRequest,
