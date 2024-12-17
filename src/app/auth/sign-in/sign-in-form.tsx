@@ -63,6 +63,10 @@ export const SignInForm = () => {
           <Button disabled={pending} formAction={formAction}>
             {pending ? <LoaderCircle className="animate-spin" /> : "Sign In"}
           </Button>
+          <div
+            className="cf-turnstile"
+            data-sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}
+          ></div>
         </CardFooter>
       </form>
     </Card>
