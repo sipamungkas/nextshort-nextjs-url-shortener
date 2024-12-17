@@ -58,12 +58,6 @@ export async function login(prevState: any, formData: FormData) {
   );
 
   const outcome = await response.json();
-  console.log({
-    outcome,
-    response: validatedFields.data.turnstilesResponse,
-    ip,
-    secret: process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY,
-  });
 
   if (!outcome.success) {
     return { message: "Invalid CAPTCHA" };
