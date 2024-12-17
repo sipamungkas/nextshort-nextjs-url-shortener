@@ -43,7 +43,7 @@ export const SignInForm = () => {
               <Input
                 id="email"
                 name="email"
-                placeholder="mail@sipamungkas.com"
+                placeholder="Enter your email"
                 required
               />
             </div>
@@ -53,7 +53,7 @@ export const SignInForm = () => {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="********"
+                placeholder="Enter your password"
                 required
               />
             </div>
