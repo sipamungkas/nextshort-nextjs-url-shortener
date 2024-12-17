@@ -87,9 +87,9 @@ export function TableUrl() {
             <TableCell className="text-center">
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <Button size="sm" variant="ghost">
-                    <Ellipsis size={20} />
-                  </Button>
+                  {/* <Button size="sm" variant="ghost"> */}
+                  <Ellipsis size={20} />
+                  {/* </Button> */}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
@@ -109,9 +109,7 @@ export function TableUrl() {
           </TableRow>
         ))}
       </TableBody>
-      <TableFooter>
-        <span />
-      </TableFooter>
+      <TableFooter></TableFooter>
     </Table>
   );
 }
