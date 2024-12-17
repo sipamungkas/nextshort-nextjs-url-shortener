@@ -19,10 +19,17 @@ export default function Home() {
         <p className="text-center mt-4">
           Server terbaik dan termurah untuk development dan production-mu!
         </p>
+
         <div className="w-full mt-8 grid grid-col gap-6">
           <Link href="https://yukcek.com/orangevps" target="_blank">
             <Button className="w-full p-7 text-base font-semibold rounded-sm transition-all ease-in-out duration-500 hover:scale-105">
-              VPS Luar Negeri 1$-an
+              VPS Budget Singapore
+            </Button>
+          </Link>
+
+          <Link href="https://yukcek.com/fonnte" target="_blank">
+            <Button className="w-full p-7 text-base font-semibold rounded-sm transition-all ease-in-out duration-500 hover:scale-105">
+              Free Whatsapp API
             </Button>
           </Link>
 
@@ -32,15 +39,15 @@ export default function Home() {
             </Button>
           </Link>
 
-          <Link href="https://yukcek.com/contabo" target="_blank">
-            <Button className="w-full p-7 text-base font-semibold rounded-sm transition-all ease-in-out duration-500 hover:scale-105">
-              VPS Termurah
-            </Button>
-          </Link>
-
           <Link href="https://yukcek.com/onidel" target="_blank">
             <Button className="w-full p-7 text-base font-semibold rounded-sm transition-all ease-in-out duration-500 hover:scale-105">
               VPS SLA Uptime 100%
+            </Button>
+          </Link>
+
+          <Link href="https://yukcek.com/contabo" target="_blank">
+            <Button className="w-full p-7 text-base font-semibold rounded-sm transition-all ease-in-out duration-500 hover:scale-105">
+              VPS Termurah Luar Negeri
             </Button>
           </Link>
 
