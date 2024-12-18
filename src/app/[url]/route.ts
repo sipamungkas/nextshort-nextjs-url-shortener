@@ -13,6 +13,7 @@ export async function GET(
       .from("urls")
       .select("original_url")
       .eq("custom_url", maskUrl)
+      .eq("is_active", true)
       .single();
 
     if (!data || error) {
