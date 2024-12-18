@@ -1,4 +1,7 @@
-import { createClient } from "@/lib/utils/supabase/client";
+"use server";
+
+import { createClient as createSupaServer } from "@/lib/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const createMaskSchema = z.object({
@@ -23,7 +26,7 @@ export const createMask = async (prevState: any, form: FormData) => {
       };
     }
 
-    const supabase = createClient();
+    const supabase = await createSupaServer();
     const { data: urls } = await supabase
       .from("urls")
       .select("short_url")
@@ -33,17 +36,22 @@ export const createMask = async (prevState: any, form: FormData) => {
       return { success: false, message: "Mask url already exists" };
     }
 
+    const user = await supabase.auth.getUser();
+
     const { error } = await supabase.from("urls").insert([
       {
         title: validatedFields.data?.title,
         original_url: validatedFields.data?.original_url,
         short_url: validatedFields.data?.maskUrl,
         custom_url: validatedFields.data?.maskUrl,
+        user_id: user?.data.user?.id,
       },
     ]);
     if (error) {
+      console.log({ error });
       return { success: false, message: "something went wrong" };
     }
+    revalidatePath("/dashboard");
     return { success: true, message: "Mask created successfully" };
   } catch (error) {
     console.log(error);
@@ -53,7 +61,7 @@ export const createMask = async (prevState: any, form: FormData) => {
 
 export const getUrls = async () => {
   try {
-    const supabase = createClient();
+    const supabase = await createSupaServer();
     const { data, error } = await supabase
       .from("urls")
       .select("*")
@@ -63,9 +71,52 @@ export const getUrls = async () => {
       .neq("original_url", "");
     if (error) {
       console.log(error);
+      return { success: false, message: "something went wrong", data: [] };
+    }
+    return { success: true, message: "Masked List Data", data };
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: "something went wrong", data: [] };
+  }
+};
+
+export const disableUrl = async ({
+  id,
+  isActive,
+}: {
+  id: string;
+  isActive: boolean;
+}) => {
+  try {
+    const supabase = await createSupaServer();
+
+    const { error } = await supabase
+      .from("urls")
+      .update({ is_active: isActive })
+      .eq("id", id);
+
+    if (error) {
+      console.log(error);
       return { success: false, message: "something went wrong" };
     }
-    return { success: true, data };
+    revalidatePath("/dashboard");
+    return { success: true, message: "Update success" };
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: "something went wrong" };
+  }
+};
+
+export const deleteurl = async (id: string) => {
+  try {
+    const supabase = await createSupaServer();
+    const { error } = await supabase.from("urls").delete().eq("id", id);
+    if (error) {
+      console.log(error);
+      return { success: false, message: "something went wrong" };
+    }
+    revalidatePath("/dashboard");
+    return { success: true, message: "Delete success" };
   } catch (error) {
     console.log(error);
     return { success: false, message: "something went wrong" };

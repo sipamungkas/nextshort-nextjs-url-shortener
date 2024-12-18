@@ -15,7 +15,7 @@ export default async function DashboardLayout({
   return (
     <div className="mx-auto relative w-full">
       <Navbar user={user!} />
-      <main className="container  max-w-5xl mx-auto mt-8 md:mt-20">
+      <main className="container max-w-5xl mx-auto mt-8 md:mt-20">
         {children}
       </main>
     </div>

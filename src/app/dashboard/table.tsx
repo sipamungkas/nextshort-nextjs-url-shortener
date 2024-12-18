@@ -18,29 +18,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Copy, Ellipsis } from "lucide-react";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-import { getUrls } from "./action";
+import { deleteurl, disableUrl } from "./action";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export function TableUrl() {
-  const [urls, setUrls] = useState([]);
-
-  const fetchData = async () => {
-    const res = await getUrls();
-    if (res.success) {
-      setUrls(res.data as unknown as []);
-    } else {
-      toast.error("Failed to fetch data");
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+export function TableUrl({ data }: { data: any[] }) {
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard");
@@ -60,14 +43,14 @@ export function TableUrl() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {urls.length === 0 && (
+        {data.length === 0 && (
           <TableRow className="">
             <TableCell colSpan={7} className="text-center">
               No Data
             </TableCell>
           </TableRow>
         )}
-        {urls.map((item: any) => (
+        {data.map((item: any) => (
           <TableRow key={item.id} className="text-card-foreground/80">
             <TableCell>
               <div className="flex flex-row items-center">
@@ -79,9 +62,9 @@ export function TableUrl() {
               </div>
             </TableCell>
             <TableCell>{item.original_url}</TableCell>
-            <TableCell>{item.qr}</TableCell>
+            <TableCell>{item.qr ?? "No QR available"}</TableCell>
             <TableCell>{item.clicks || 0}</TableCell>
-            <TableCell>{item.status || "active"}</TableCell>
+            <TableCell>{item.is_active ? "Active" : "Disabled"}</TableCell>
             <TableCell>{item.created_at}</TableCell>
             <TableCell className="text-center">
               <DropdownMenu>
@@ -95,10 +78,21 @@ export function TableUrl() {
                     <DropdownMenuItem className="cursor-pointer">
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">
-                      Disable
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => {
+                        disableUrl({
+                          id: item.id,
+                          isActive: !item.is_active,
+                        });
+                      }}
+                    >
+                      {item.is_active ? "Disable" : "Enable"}
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer hover:text-red-500 hover:bg-red-100">
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:text-red-500 hover:bg-red-100"
+                      onClick={async () => await deleteurl(item.id)}
+                    >
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
