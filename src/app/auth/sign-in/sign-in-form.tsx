@@ -12,8 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "./action";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { LoaderCircle, TriangleAlert } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const initialState = {
   message: "",
@@ -21,6 +22,19 @@ const initialState = {
 
 export const SignInForm = () => {
   const [state, formAction, pending] = useActionState(login, initialState);
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const turnstileContainers = document.querySelectorAll(".cf-turnstile");
+
+    turnstileContainers.forEach((turnstileContainer) => {
+      turnstileContainer.innerHTML = "";
+      if (window && window.turnstile) {
+        window.turnstile.reset();
+      }
+    });
+  }, [pathname]);
 
   return (
     <Card className="w-96">
