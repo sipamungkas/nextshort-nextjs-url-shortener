@@ -6,14 +6,8 @@ FROM base AS deps
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* bun.lockb* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  elif [ -f bun.lockb ]; then bun install --frozen-lockfile --production; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+COPY package.json bun.lockb* ./
+RUN bun install --frozen-lockfile --production
 
 
 # Rebuild the source code only when needed
@@ -45,13 +39,7 @@ RUN echo "NEXT_PUBLIC_SUPABASE_URL $NEXT_PUBLIC_SUPABASE_URL" && \
     echo "NEXT_PUBLIC_CLOUDFLARE_SITE_KEY $NEXT_PUBLIC_CLOUDFLARE_SITE_KEY" && \
     echo "CLOUDFLARE_TURNSTILE_SECRET_KEY $CLOUDFLARE_TURNSTILE_SECRET_KEY"
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  elif [ -f bun.lockb ]; then bun run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+RUN bun run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
