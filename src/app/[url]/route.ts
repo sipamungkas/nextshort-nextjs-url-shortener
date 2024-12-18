@@ -5,6 +5,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ url: string }> }
 ) {
+  console.log({ requrl: req.url, next: req.nextUrl });
   try {
     const maskUrl = (await params).url;
     const supabase = await createClient();
@@ -17,7 +18,7 @@ export async function GET(
       .single();
 
     if (!data || error) {
-      return NextResponse.redirect(new URL("/"), {
+      return NextResponse.redirect(new URL("/", req.url), {
         status: 302,
       });
     }
@@ -26,7 +27,7 @@ export async function GET(
     });
   } catch (error) {
     console.log({ error });
-    return NextResponse.redirect(new URL("/"), {
+    return NextResponse.redirect(new URL("/", req.url), {
       status: 302,
     });
   }
