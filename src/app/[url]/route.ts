@@ -18,7 +18,7 @@ export async function GET(
       .single();
 
     if (!data || error) {
-      return NextResponse.redirect(new URL("/", req.url), {
+      return NextResponse.redirect(new URL("/", req.nextUrl), {
         status: 302,
       });
     }
@@ -27,7 +27,7 @@ export async function GET(
     });
   } catch (error) {
     console.log({ error });
-    return NextResponse.redirect(new URL("/", req.url), {
+    return NextResponse.redirect(new URL("/", req.nextUrl), {
       status: 302,
     });
   }
