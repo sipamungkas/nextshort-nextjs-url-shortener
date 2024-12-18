@@ -1,18 +1,17 @@
-FROM node:22-alpine AS base
+FROM oven/bun:latest as base
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* bun.lockb* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  elif [ -f bun.lockb ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  elif [ -f bun.lockb ]; then bun install --frozen-lockfile --production; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -27,11 +26,24 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
-# ARG BASE_URL
-# ENV BASE_URL=${BASE_URL}
-# ARG DEV_TO_API_KEY
-# ENV DEV_TO_API_KEY=${DEV_TO_API_KEY}
 
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_CLOUDFLARE_SITE_KEY
+ARG CLOUDFLARE_TURNSTILE_SECRET_KEY
+
+ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+ENV NEXT_PUBLIC_CLOUDFLARE_SITE_KEY=${NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}
+ENV CLOUDFLARE_TURNSTILE_SECRET_KEY=${CLOUDFLARE_TURNSTILE_SECRET_KEY}
+
+RUN echo "NEXT_PUBLIC_SUPABASE_URL $NEXT_PUBLIC_SUPABASE_URL" && \
+    echo "NEXT_PUBLIC_SUPABASE_ANON_KEY $NEXT_PUBLIC_SUPABASE_ANON_KEY" && \
+    echo "NEXT_PUBLIC_BASE_URL $NEXT_PUBLIC_BASE_URL" && \
+    echo "NEXT_PUBLIC_CLOUDFLARE_SITE_KEY $NEXT_PUBLIC_CLOUDFLARE_SITE_KEY" && \
+    echo "CLOUDFLARE_TURNSTILE_SECRET_KEY $CLOUDFLARE_TURNSTILE_SECRET_KEY"
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
@@ -47,7 +59,24 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_CLOUDFLARE_SITE_KEY
+ARG CLOUDFLARE_TURNSTILE_SECRET_KEY
+
+ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+ENV NEXT_PUBLIC_CLOUDFLARE_SITE_KEY=${NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}
+ENV CLOUDFLARE_TURNSTILE_SECRET_KEY=${CLOUDFLARE_TURNSTILE_SECRET_KEY}
+
+RUN echo "NEXT_PUBLIC_SUPABASE_URL $NEXT_PUBLIC_SUPABASE_URL" && \
+    echo "NEXT_PUBLIC_SUPABASE_ANON_KEY $NEXT_PUBLIC_SUPABASE_ANON_KEY" && \
+    echo "NEXT_PUBLIC_BASE_URL $NEXT_PUBLIC_BASE_URL" && \
+    echo "NEXT_PUBLIC_CLOUDFLARE_SITE_KEY $NEXT_PUBLIC_CLOUDFLARE_SITE_KEY" && \
+    echo "CLOUDFLARE_TURNSTILE_SECRET_KEY $CLOUDFLARE_TURNSTILE_SECRET_KEY"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -73,4 +102,4 @@ ENV PORT=3000
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+CMD ["bun", "run", "server.js"]
