@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,14 +28,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Script
+        src="https://umami.inode.cloud/script.js"
+        data-website-id="69fa01a2-4052-41c9-b30b-2a90c810f3bd"
+        defer
+      />
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          // enableSystem
-          disableTransitionOnChange
+          // disableTransitionOnChange
         >
           {children}
           <Toaster position="top-center" />
