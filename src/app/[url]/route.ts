@@ -17,7 +17,7 @@ export async function GET(
       .single();
 
     if (!data || error) {
-      return NextResponse.redirect(new URL("/", req.url), {
+      return NextResponse.redirect(new URL("/"), {
         status: 302,
       });
     }
