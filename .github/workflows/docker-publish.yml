@@ -68,6 +68,7 @@ jobs:
             NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}
             NEXT_PUBLIC_CLOUDFLARE_SITE_KEY=${{ secrets.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY }}
             CLOUDFLARE_TURNSTILE_SECRET_KEY=${{ secrets.CLOUDFLARE_TURNSTILE_SECRET_KEY }}
+            BASE_URL=${{ secrets.BASE_URL }}
 
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
