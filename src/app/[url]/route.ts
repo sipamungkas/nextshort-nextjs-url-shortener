@@ -1,6 +1,10 @@
 import { createClient } from "@/lib/utils/supabase/server";
-import { redirect } from "next/navigation";
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { z } from "zod";
+
+const maskSchema = z.object({
+  url: z.string(),
+});
 
 export async function GET(
   req: NextRequest,
@@ -8,22 +12,31 @@ export async function GET(
 ) {
   try {
     const maskUrl = (await params).url;
+    const validatedUrl = maskSchema.safeParse({ url: maskUrl });
+    if (!validatedUrl.success) {
+      return NextResponse.redirect(
+        new URL("/", process.env.NEXT_PUBLIC_BASE_URL)
+      );
+    }
     const supabase = await createClient();
 
     const { data, error } = await supabase
       .from("urls")
       .select("original_url")
-      .eq("custom_url", maskUrl)
+      .eq("custom_url", validatedUrl.data?.url)
       .eq("is_active", true)
       .single();
-    console.log({ data, error });
-    if (!data || error) {
-      return redirect("/");
-    }
 
-    return redirect(data?.original_url);
+    if (!data || error) {
+      return NextResponse.redirect(
+        new URL("/", process.env.NEXT_PUBLIC_BASE_URL)
+      );
+    }
+    return NextResponse.redirect(new URL(data?.original_url));
   } catch (error) {
     console.log({ error });
-    return redirect("/");
+    return NextResponse.redirect(
+      new URL("/", process.env.NEXT_PUBLIC_BASE_URL)
+    );
   }
 }
