@@ -21,6 +21,12 @@ export default function Home() {
         </p>
 
         <div className="w-full mt-8 grid grid-col gap-6">
+          <Link href="https://yukcek.com/greencloud" target="_blank">
+            <Button className="w-full p-7 text-base font-semibold rounded-sm transition-all ease-in-out duration-500 hover:scale-105">
+              VPS Singapore
+            </Button>
+          </Link>
+
           <Link href="https://yukcek.com/orangevps" target="_blank">
             <Button className="w-full p-7 text-base font-semibold rounded-sm transition-all ease-in-out duration-500 hover:scale-105">
               VPS Budget Singapore
@@ -59,7 +65,7 @@ export default function Home() {
         </div>
         <footer className="flex flex-col items-center w-full mt-20">
           <span className="text-white/80 text-center text-sm font-semibold">
-            © 2024 {""}
+            © 2024 {""} YukCek! - All rights reserved created by{" "}
             <Link
               className="text-blue-300 "
               href="https://sipamungkas.com"
