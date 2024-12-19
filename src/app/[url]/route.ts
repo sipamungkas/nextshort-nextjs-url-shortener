@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/utils/supabase/server";
-import { type NextRequest, NextResponse } from "next/server";
+import { redirect } from "next/navigation";
+import { type NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
@@ -15,19 +16,14 @@ export async function GET(
       .eq("custom_url", maskUrl)
       .eq("is_active", true)
       .single();
-
+    console.log({ data, error });
     if (!data || error) {
-      return NextResponse.redirect(new URL("/", req.nextUrl.origin), {
-        status: 302,
-      });
+      return redirect("/");
     }
-    return NextResponse.redirect(new URL(data?.original_url), {
-      status: 302,
-    });
+
+    return redirect(data?.original_url);
   } catch (error) {
     console.log({ error });
-    return NextResponse.redirect(new URL("/", req.nextUrl.origin), {
-      status: 302,
-    });
+    return redirect("/");
   }
 }
