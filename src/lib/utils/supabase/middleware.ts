@@ -1,5 +1,4 @@
 import { createServerClient } from "@supabase/ssr";
-import { redirect } from "next/navigation";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
@@ -36,7 +35,7 @@ export async function updateSession(request: NextRequest) {
 
   //protected page
   if (request.nextUrl.pathname.startsWith("/dashboard") && user.error) {
-    return redirect("/");
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return supabaseResponse;
