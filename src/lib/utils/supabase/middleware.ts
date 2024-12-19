@@ -6,6 +6,8 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
+  const protectedPage = ["dashboard", "auth/change-password"];
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -34,7 +36,7 @@ export async function updateSession(request: NextRequest) {
   const user = await supabase.auth.getUser();
 
   //protected page
-  if (request.nextUrl.pathname.startsWith("/dashboard") && user.error) {
+  if (protectedPage.some((page) => request.nextUrl.pathname.startsWith(`/${page}`)) && user.error) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
