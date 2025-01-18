@@ -4,8 +4,8 @@ on:
   push:
     branches: ["main"]
     tags: ["v*.*.*"] # Publish semver tags as releases.
-  pull_request:
-    branches: ["main"]
+  # pull_request:
+  #   branches: ["main"]
 
 env:
   REGISTRY: ghcr.io # Default to GitHub Container Registry
