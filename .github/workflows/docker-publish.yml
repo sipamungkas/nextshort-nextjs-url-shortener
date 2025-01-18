@@ -98,7 +98,9 @@ jobs:
       - name: Trigger deployment webhook
         uses: sozo-design/curl@v1.0.2
         with:
-          args: ${{ secrets.DOKPLOY_WEBHOOK }}
+          args: |
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_API_KEY }}"
+            ${{ secrets.COOLIFY_WEBHOOK_URL }}
       - name: Notify Telegram - Deployment Triggered
         if: success()
         run: |
