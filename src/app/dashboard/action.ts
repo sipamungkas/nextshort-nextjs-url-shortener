@@ -59,21 +59,23 @@ export const createMask = async (prevState: any, form: FormData) => {
   }
 };
 
-export const getUrls = async () => {
+export const getUrls = async (page: number = 1, limit: number = 10) => {
   try {
     const supabase = await createSupaServer();
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from("urls")
-      .select("*")
+      .select("*", { count: "exact" })
       .neq("custom_url", null)
       .neq("original_url", null)
       .neq("short_url", null)
-      .neq("original_url", "");
+      .neq("original_url", "")
+      .range((page - 1) * limit, page * limit - 1);
+
     if (error) {
       console.log(error);
       return { success: false, message: "something went wrong", data: [] };
     }
-    return { success: true, message: "Masked List Data", data };
+    return { success: true, message: "Masked List Data", data, count };
   } catch (error) {
     console.log(error);
     return { success: false, message: "something went wrong", data: [] };
