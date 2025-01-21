@@ -28,6 +28,7 @@ export function TableUrl({ data }: { data: any[] }) {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard");
   };
+  console.log({ data });
   return (
     <Table>
       <TableCaption>A list of your masked links.</TableCaption>

@@ -22,7 +22,7 @@ export async function GET(
 
     const { data, error } = await supabase
       .from("urls")
-      .select("original_url")
+      .select("original_url,id")
       .eq("custom_url", validatedUrl.data?.url)
       .eq("is_active", true)
       .single();
@@ -32,6 +32,13 @@ export async function GET(
         new URL("/", process.env.NEXT_PUBLIC_BASE_URL)
       );
     }
+
+    supabase
+      .rpc("increment_click_count", {
+        url_id_param: data?.id,
+      })
+      .then();
+
     return NextResponse.redirect(new URL(data?.original_url));
   } catch (error) {
     console.log({ error });
