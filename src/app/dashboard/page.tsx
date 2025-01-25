@@ -30,7 +30,7 @@ export default async function Page({
       <div className="mt-10">
         <Suspense fallback={<div>Loading...</div>}>
           <TableUrl data={res.data} />
-          {res.count}
+          <div className="text-right ">Rows Total:{res.count}</div>
           <PaginationComponent
             count={res.count as number}
             page={Number(page) || 1}

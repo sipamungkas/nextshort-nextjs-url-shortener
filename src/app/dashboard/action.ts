@@ -64,7 +64,15 @@ export const getUrls = async (page: number = 1, limit: number = 10) => {
     const supabase = await createSupaServer();
     const { data, error, count } = await supabase
       .from("urls")
-      .select("*", { count: "exact" })
+      .select(
+      `
+      *,  
+      daily_clicks (
+        click_count
+      )`,
+        { count: "exact" }
+      )
+      .eq("daily_clicks.click_date", new Date().toISOString().split("T")[0])
       .neq("custom_url", null)
       .neq("original_url", null)
       .neq("short_url", null)

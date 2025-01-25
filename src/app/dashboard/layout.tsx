@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/navbar";
+import { Toaster } from "@/components/ui/sonner";
 import { createClient } from "@/lib/utils/supabase/server";
 
 export default async function DashboardLayout({
@@ -18,6 +19,7 @@ export default async function DashboardLayout({
       <main className="container max-w-5xl mx-auto mt-8 md:mt-20">
         {children}
       </main>
+      <Toaster position="top-center" closeButton className="bg-background"/>
     </div>
   );
 }
