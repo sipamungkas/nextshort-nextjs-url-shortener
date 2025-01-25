@@ -20,6 +20,8 @@ import {
 import { Copy, Ellipsis } from "lucide-react";
 import { toast } from "sonner";
 import { deleteurl, disableUrl } from "./action";
+import { formatDate } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -28,7 +30,6 @@ export function TableUrl({ data }: { data: any[] }) {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard");
   };
-  console.log({ data });
   return (
     <Table>
       <TableCaption>A list of your masked links.</TableCaption>
@@ -39,7 +40,7 @@ export function TableUrl({ data }: { data: any[] }) {
           <TableHead>QRCode</TableHead>
           <TableHead>Clicks</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Date</TableHead>
+          <TableHead className="text-center">Date</TableHead>
           <TableHead className="text-center">Action</TableHead>
         </TableRow>
       </TableHeader>
@@ -64,9 +65,17 @@ export function TableUrl({ data }: { data: any[] }) {
             </TableCell>
             <TableCell>{item.original_url}</TableCell>
             <TableCell>{item.qr ?? "No QR available"}</TableCell>
-            <TableCell>{item.clicks || 0}</TableCell>
-            <TableCell>{item.is_active ? "Active" : "Disabled"}</TableCell>
-            <TableCell>{item.created_at}</TableCell>
+            <TableCell className="text-center">
+              {item.daily_clicks.length > 0
+                ? item.daily_clicks[0].click_count
+                : 0}
+            </TableCell>
+            <TableCell>
+              <Badge variant={item.is_active ? "default" : "destructive"}>
+                {item.is_active ? "Active" : "Disabled"}
+              </Badge>
+            </TableCell>
+            <TableCell>{formatDate(item.created_at)}</TableCell>
             <TableCell className="text-center">
               <DropdownMenu>
                 <DropdownMenuTrigger>
